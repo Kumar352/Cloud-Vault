@@ -1,0 +1,29 @@
+# Synced ChatGPT project references are read-only and must not be published.
+/sources/
+/AGENTS.md
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data, databases, and model files
+data/
+models/
+*.sqlite
+*.db
+*.pgdump
+
+# Tool-generated files
+.terraform/
+*.tfstate
+*.tfstate.*
+node_modules/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
