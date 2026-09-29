@@ -3,11 +3,13 @@
 ## Current environment check (30 September 2026)
 
 - Git is available (`2.55.0.windows.5`).
-- Docker/Docker Compose, Node.js, Python, and Terraform were not found on the current command PATH.
+- Docker/Docker Compose and Terraform were not found on the current command PATH.
+- Codex's bundled Node.js `v24.19.0`, Python `3.12.14`, and pnpm `11.19.0` are available by absolute path under `C:\\Users\\kumar\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies`. They are agent runtimes, not global installations.
+- The bundled Python currently has Pydantic, but FastAPI, Uvicorn, SQLAlchemy, scikit-learn, and pytest are not installed.
 - No project Git repository existed at the start of Phase 1A.
 - No RAM, GPU/VRAM, or free-disk inventory has been verified; select an Ollama model only after checking those resources.
 
-No tools were installed and no external services were contacted as part of this check.
+No tools were installed and no external services were contacted as part of this check. Do not assume the bundled runtimes are suitable as a permanent development environment; verify project compatibility and use them only as needed.
 
 ## Phase 1A follow-up
 
