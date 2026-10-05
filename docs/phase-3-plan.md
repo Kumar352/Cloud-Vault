@@ -51,7 +51,7 @@ A reviewer can understand the system, reproduce the local synthetic walkthrough,
 
 - [x] Keep the project unlicensed/all-rights-reserved until the owner chooses a license; do not imply reuse rights.
 - [ ] Review repository description, screenshots, README, and issue templates for personal information and accidental secrets.
-- [ ] Make no cloud deployment, Vercel publish, GitHub Actions spend, or other external publication without a separate scope and cost review.
+- [x] Publish the reviewed source and documentation to the user-requested public GitHub repository. No AWS deployment, Vercel project, or GitHub Actions workflow was created.
 - [x] Review the working-tree file list and run a targeted secret scan; owner review of the final publication contents remains required.
 - [ ] Tag a version only after the local release checks are complete.
 
@@ -61,4 +61,4 @@ Production identity/session handling, public-user onboarding, managed storage/me
 
 ## Phase 3 exit criteria
 
-Local portfolio packaging is complete for the work in this checkout. A live full workflow and GitHub publication remain unverified. The current workspace has no Git remote; the GitHub repository is empty. Read access is available, but GitHub's write API returned HTTP 403 for a file creation attempt and direct Git network access is blocked, so the source could not be pushed. No remote change was made. The reviewed local file list excludes the ignored private account note and `sources/`; do not claim public release until publication succeeds.
+The reviewed local portfolio source and documentation were published to the public `Kumar352/Cloud-Vault` repository on `main` in commit `a3c28d1` (2026-10-05). The commit excludes the ignored private account note, `sources/`, local settings, model files, and generated demo data. Dex discovery, ClamAV PING/PONG, local Qwen inference, and Terraform validation were confirmed; API tests and the web build had passed in the earlier Phase 1 implementation work. No AWS resources or hosted services were created. Repository description, screenshots, and a version tag are optional owner-controlled release polish and were not changed in this work.
