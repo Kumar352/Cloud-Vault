@@ -1,0 +1,41 @@
+issuer: http://localhost:5556/dex
+
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+
+web:
+  http: 0.0.0.0:5556
+  allowedOrigins:
+    - http://localhost:8000
+    - http://localhost:3000
+
+oauth2:
+  skipApprovalScreen: true
+  responseTypes:
+    - code
+  pkce:
+    enforce: true
+
+enablePasswordDB: true
+
+staticClients:
+  - id: cloudvault-api
+    name: CloudVault local API
+    public: true
+    redirectURIs:
+      - http://localhost:8000/docs/oauth2-redirect
+      - http://localhost:3000/auth/callback
+
+staticPasswords:
+  # Synthetic lab users only. The public sample password is "password".
+  # This Dex instance is loopback-only and must never be used for real accounts.
+  - email: alice@example.test
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: alice
+    userID: 08a8684b-db88-4b73-90a9-3cd1661f5466
+  - email: bob@example.test
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: bob
+    userID: 7afc9ebc-0d81-40d3-9d94-29fdb41e1f5f

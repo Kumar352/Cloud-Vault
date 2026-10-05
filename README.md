@@ -1,29 +1,85 @@
 # CloudVault 2.0
 
-CloudVault is a local-first portfolio project for secure file collaboration, malware quarantine and scanning, auditable access, a permission-aware RAG assistant, and explainable ML anomaly detection.
+CloudVault is a local-first security portfolio project for authenticated file storage and collaboration. Its Phase 1 implementation demonstrates encrypted quarantine, malware-scanned file versions, per-file sharing, audit trails, permission-filtered retrieval-augmented answers, and review-only anomaly detection.
 
-## Project status
+## Phase status
 
-Phase 1A foundation is in progress. The first target is a local development environment. AWS architecture and Terraform are for learning and documentation; **nothing is deployed by default**. Any later action that could incur charges requires a service-by-service estimate and your explicit approval.
+**Phase 1 implementation is complete for the local portfolio scope.** The application uses a local OIDC provider, FastAPI, SQLite metadata, encrypted files stored on local disk, an optional ClamAV container, and local Ollama inference when available. Synthetic users and files are for learning only. See [the Phase 1 completion record](docs/phase-1-completion.md) and [the architecture](docs/architecture.md).
 
-## Planned capabilities
+No AWS, Vercel, external model API, or hosted identity service is used by the application. The optional ClamAV image downloads current signature definitions when first started. AWS design remains documentation and disabled-by-default Terraform reference only; any later deployment requires a separate service-by-service estimate and review under the cost guardrails in [the Phase 2 plan](docs/phase-2-plan.md). The Phase 3 portfolio checklist records what is complete locally and what still depends on owner review or external access.
 
-- Secure file upload, versioning, access control, and collaboration.
-- Quarantine and malware scan lifecycle; only clean, authorized files can be downloaded.
-- Structured audit events and cloud threat-detection integration in the AWS target design.
-- RAG over files the signed-in user is authorized to access, with citations.
-- A real local model through Ollama where the host can run it; the model provider will be configurable.
-- A separate, explainable anomaly detector trained and evaluated with synthetic audit events first.
+## Run the local app
 
-## Local development
+Prerequisites: the workspace Node.js/pnpm and Python runtimes, existing app dependencies, and Docker Desktop only when using Dex/ClamAV. Local object storage and metadata need no Docker services.
 
-Prerequisites and exact supported versions will be recorded as the stack is implemented. The planned local services are PostgreSQL with pgvector, MinIO, a local queue/worker, ClamAV, and an optional Ollama model. AWS, Vercel, and hosted model calls stay off unless separately approved.
+If a regular PowerShell terminal cannot find Node or pnpm, add the bundled tools for that terminal:
 
-See [the architecture notes](docs/architecture.md), [the threat model](docs/threat-model.md), and [the development notes](docs/development.md).
+    $env:PATH = "C:\Users\kumar\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin;C:\Users\kumar\.cache\codex-runtimes\codex-primary-runtime\dependencies\bin\fallback;" + $env:PATH
 
-## Security and data
+1. From the repository root, start local Dex and ClamAV when Docker is available:
 
-Use synthetic files and users during development. Never commit credentials, model weights, real user files, or generated secrets. Treat uploaded content and extracted text as untrusted. Do not log file contents, authentication tokens, or secrets.
+   ```powershell
+   docker compose --profile identity --profile scanner up -d dex clamav
+   ```
+
+   First ClamAV startup can take time while its free malware signatures are downloaded. Wait until ClamAV reports ready in its container logs.
+
+2. In a second PowerShell window, start the API:
+
+   ```powershell
+   .\apps\api\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir apps\api --reload --host 127.0.0.1 --port 8000
+   ```
+
+3. In a third window, start the scan queue worker:
+
+   ```powershell
+   $env:PYTHONPATH = Join-Path (Get-Location) 'apps\api'
+   .\apps\api\.venv\Scripts\python.exe -m app.worker
+   ```
+
+   Run that command from `apps\api` (or set `PYTHONPATH=apps\api` from the repository root).
+
+4. In another window, start the web app from `apps\web`:
+
+   ```powershell
+   pnpm dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) and sign in with one of the synthetic local users:
+
+   | User | Password | Access example |
+   |---|---|---|
+   | `alice@example.test` | `password` | Owner of uploaded files; may share them |
+   | `bob@example.test` | `password` | Read-only collaborator after Alice shares a file |
+
+   This public sample password must never be reused. Use only synthetic files. Uploads are capped at 10 MiB and stay unavailable until ClamAV clears them. Downloads return only the latest clean version.
+
+If Docker is not available, start the web app and API anyway. You can inspect the UI and API, but sign-in needs Dex and uploaded files remain quarantined because the scanner fails closed. The assistant responds with a grounded mock excerpt until Ollama is reachable.
+
+Local guardrails cap uploads at 10 MiB each and 50 MiB total; each account can create 100 files, and each file keeps at most 20 versions. The scan queue accepts up to 25 queued files, the assistant accepts up to 50 questions per account per UTC day, and the audit history retains at most 10,000 rows per user.
+
+## Local data and controls
+
+- Runtime files, SQLite database, and the generated AES-GCM key are placed in ignored `data/vault/`; keep that directory out of Git and back up the key before any data migration.
+- Use the installed local Ollama model `qwen3:1.7b-q4_K_M` if available. Hosted inference is not configured.
+- Dex and ClamAV are optional Compose profiles; PostgreSQL/pgvector, S3Mock, and Redis are also opt-in comparison services and are not required by this SQLite/filesystem Phase 1 implementation.
+- To stop optional containers after a demo: `docker compose stop dex clamav`.
+- No Git push, cloud deployment, or Vercel publishing is part of this phase.
+
+## Project references
+
+- [Phase 1 completion record](docs/phase-1-completion.md)
+- [Phase 2 plan and cost gate](docs/phase-2-plan.md)
+- [Phase 3 proposed portfolio-release plan](docs/phase-3-plan.md)
+- [Local demo walkthrough](docs/demo-guide.md)
+- [Local troubleshooting](docs/troubleshooting.md)
+- [Architecture and AWS target mapping](docs/architecture.md)
+- [AWS Terraform reference blueprint](infra/aws/README.md)
+- [Tools and connections checklist](docs/tools-and-connections.md)
+- [Threat model](docs/threat-model.md)
+- [Local development notes](docs/development.md)
+- [API workflow](apps/api/README.md)
+- [Web app](apps/web/README.md)
 
 ## License
 

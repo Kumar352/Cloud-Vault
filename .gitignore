@@ -6,6 +6,7 @@
 .env
 .env.*
 !.env.example
+!.env.local.example
 *.pem
 *.key
 
@@ -13,16 +14,22 @@
 data/
 models/
 *.sqlite
+*.sqlite3
+*.sqlite3-*
 *.db
 *.pgdump
 
 # Tool-generated files
 .terraform/
+.tools/
 *.tfstate
 *.tfstate.*
 node_modules/
+.pnpm-store/
 dist/
 build/
+.next/
+*.tsbuildinfo
 __pycache__/
 .pytest_cache/
 .venv/
