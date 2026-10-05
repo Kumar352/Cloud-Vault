@@ -31,6 +31,7 @@ The AWS connector is not a substitute for the AWS console's full service coverag
 | Vercel | Vercel connector authenticated; account is on Hobby and has no CloudVault project. | Do not connect/deploy this frontend for the local portfolio. The app needs a reachable API, identity provider, and scanner; hosting only Next.js would not provide those. Hobby is limited to personal/non-commercial use under current terms. |
 | GitHub Actions | Not configured | Optional. Avoid deployment workflows and external CI until the workflow, permissions, and any usage/storage implications are reviewed. Local checks are enough for the current $0 target. |
 | PostgreSQL/pgvector, Redis, S3Mock | Compose definitions exist as optional comparison services, but Phase 1 does not use them. | Not needed to run or demonstrate the implemented local app. |
+| Gitleaks, Trivy, Checkov | Optional source-secret, dependency/container, and IaC security scanners | Not installed. A targeted credential-pattern scan and Terraform validation were run locally; these dedicated scanners are not needed to run the app. | Optional defense-in-depth tools. No CI workflow is configured, so scans stay local and do not trigger hosted jobs. |
 | Figma, Notion, email/chat, paid hosted AI, VirusTotal, hosted malware scanning | No project integration configured or required | Do not add accounts or subscriptions for this portfolio. The current visual app, docs, ClamAV, Ollama, and mock response cover the intended learning scope locally. |
 
 ## Keep free of recurring charges
